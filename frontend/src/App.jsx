@@ -599,10 +599,11 @@ function App() {
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-br from-indigo-500 to-purple-500 p-2.5 rounded-2xl shadow-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                <circle cx="12" cy="12" r="2" fill="currentColor" />
               </svg>
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Intern Management</h1>
+            <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">InternSync</h1>
           </div>
           <nav className="flex gap-2">
             <Link to="/" className="text-slate-700 hover:text-indigo-600 hover:bg-white/40 px-5 py-2.5 rounded-xl font-bold transition-all">Dashboard</Link>
