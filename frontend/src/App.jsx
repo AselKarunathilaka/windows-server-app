@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:19090/api';
 
@@ -74,6 +76,18 @@ function Dashboard() {
   }));
 
   const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+
+    return percent > 0.05 ? (
+      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '11px', fontWeight: 'bold' }}>
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    ) : null;
+  };
 
   return (
     <div>
@@ -185,6 +199,8 @@ function Dashboard() {
                     fill="#8884d8"
                     paddingAngle={5}
                     dataKey="value"
+                    labelLine={false}
+                    label={renderCustomizedLabel}
                   >
                     {universityData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -273,11 +289,50 @@ function InternList() {
     return matchesSearch && matchesSpec;
   });
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text('Intern Directory Report', 14, 22);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Specialization Filter: ${specializationFilter || 'All'} | Search: ${search || 'None'}`, 14, 30);
+    doc.text(`Total Records: ${filteredInterns.length}`, 14, 36);
+
+    const tableColumn = ["Intern #", "Name", "Specialization", "University", "Status"];
+    const tableRows = [];
+
+    filteredInterns.forEach(intern => {
+      const rowData = [
+        intern.internNumber,
+        intern.fullName,
+        intern.specialization || 'N/A',
+        intern.university || 'N/A',
+        intern.status
+      ];
+      tableRows.push(rowData);
+    });
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 42,
+      theme: 'grid',
+      headStyles: { fillColor: [79, 70, 229] }
+    });
+
+    doc.save(`intern_directory_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2>Intern Directory</h2>
-        <Link to="/add" className="btn btn-success">+ Add New Intern</Link>
+        <div>
+          <button className="btn btn-outline" style={{ marginRight: '10px' }} onClick={handleExportPDF}>Export PDF</button>
+          <Link to="/add" className="btn btn-success">+ Add New Intern</Link>
+        </div>
       </div>
 
       <div className="card">
