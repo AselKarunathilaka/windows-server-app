@@ -35,3 +35,5 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+# BFG Repo-Cleaner report files
+.git.bfg-report/
