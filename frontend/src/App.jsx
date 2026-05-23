@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:19090/api';
 
@@ -51,6 +52,23 @@ function Dashboard() {
   
   // Sort by created date descending and take top 5
   const recentInterns = [...interns].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+
+  // Chart Data Processing
+  const universityData = Object.values(interns.reduce((acc, intern) => {
+    const uni = intern.university || 'Unknown';
+    acc[uni] = acc[uni] || { name: uni, value: 0 };
+    acc[uni].value += 1;
+    return acc;
+  }, {}));
+
+  const specializationData = Object.values(interns.reduce((acc, intern) => {
+    const spec = intern.specialization || 'N/A';
+    acc[spec] = acc[spec] || { name: spec, count: 0 };
+    acc[spec].count += 1;
+    return acc;
+  }, {})).sort((a, b) => b.count - a.count);
+
+  const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
 
   return (
     <div>
@@ -139,6 +157,58 @@ function Dashboard() {
               </tbody>
             </table>
           )}
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="analytics-section" style={{ marginTop: '25px' }}>
+        <div className="card" style={{ flex: 1, minWidth: '300px' }}>
+          <h3 style={{ marginBottom: '20px' }}>Interns by University</h3>
+          <div style={{ height: '300px' }}>
+            {loading ? <p>Loading chart...</p> : interns.length === 0 ? <p>No data</p> : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={universityData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                  >
+                    {universityData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        <div className="card" style={{ flex: 1, minWidth: '300px' }}>
+          <h3 style={{ marginBottom: '20px' }}>Interns by Specialization</h3>
+          <div style={{ height: '300px' }}>
+            {loading ? <p>Loading chart...</p> : interns.length === 0 ? <p>No data</p> : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={specializationData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} interval={0} angle={-30} textAnchor="end" height={60} />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                  <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} barSize={40}>
+                    {specializationData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
         </div>
       </div>
     </div>
