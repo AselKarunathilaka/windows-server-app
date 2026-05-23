@@ -24,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
             intern1.setFullName("Asel Karunathilaka");
             intern1.setEmail("asel@example.com");
             intern1.setDepartment("DevOps");
+            intern1.setSpecialization("Cloud");
             intern1.setUniversity("SLIIT");
             intern1.setPhoneNumber("0771234567");
             intern1.setStartDate(LocalDate.now());
@@ -34,6 +35,7 @@ public class DataInitializer implements CommandLineRunner {
             intern2.setFullName("Test Intern One");
             intern2.setEmail("test1@example.com");
             intern2.setDepartment("Software Engineering");
+            intern2.setSpecialization("FullStack");
             intern2.setUniversity("SLIIT");
             intern2.setPhoneNumber("0771111111");
             intern2.setStartDate(LocalDate.now());
@@ -44,6 +46,7 @@ public class DataInitializer implements CommandLineRunner {
             intern3.setFullName("Test Intern Two");
             intern3.setEmail("test2@example.com");
             intern3.setDepartment("Networking");
+            intern3.setSpecialization("CICD");
             intern3.setUniversity("SLIIT");
             intern3.setPhoneNumber("0772222222");
             intern3.setStartDate(LocalDate.now().minusMonths(6));

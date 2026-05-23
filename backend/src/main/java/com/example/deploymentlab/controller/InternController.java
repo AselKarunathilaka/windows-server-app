@@ -54,6 +54,7 @@ public class InternController {
             intern.setFullName(internDetails.getFullName());
             intern.setEmail(internDetails.getEmail());
             intern.setDepartment(internDetails.getDepartment());
+            intern.setSpecialization(internDetails.getSpecialization());
             intern.setUniversity(internDetails.getUniversity());
             intern.setPhoneNumber(internDetails.getPhoneNumber());
             intern.setStartDate(internDetails.getStartDate());

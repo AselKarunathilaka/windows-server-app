@@ -26,6 +26,9 @@ public class Intern {
     @NotBlank(message = "Department is required")
     private String department;
 
+    @NotBlank(message = "Specialization is required")
+    private String specialization;
+
     private String university;
     private String phoneNumber;
 
@@ -59,6 +62,9 @@ public class Intern {
 
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
+
+    public String getSpecialization() { return specialization; }
+    public void setSpecialization(String specialization) { this.specialization = specialization; }
 
     public String getUniversity() { return university; }
     public void setUniversity(String university) { this.university = university; }

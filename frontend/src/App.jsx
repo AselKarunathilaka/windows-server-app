@@ -4,6 +4,11 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:19090/api';
 
+const SPECIALIZATIONS = [
+  "AI", "BA", "C#", "CICD", "Cloud", "Flutter", 
+  "FullStack", "JAVA", "MERN", "PHP", "PM", "Other"
+];
+
 function Dashboard() {
   const [status, setStatus] = useState({
     frontend: 'running',
@@ -116,7 +121,8 @@ function Dashboard() {
                 <tr>
                   <th>Intern #</th>
                   <th>Name</th>
-                  <th>Department</th>
+                  <th>Specialization</th>
+                  <th>University</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -125,7 +131,8 @@ function Dashboard() {
                   <tr key={intern.id}>
                     <td style={{ fontWeight: '600' }}>{intern.internNumber}</td>
                     <td>{intern.fullName}</td>
-                    <td>{intern.department}</td>
+                    <td><span className="badge" style={{ background: '#f3f4f6', color: '#374151' }}>{intern.specialization || 'N/A'}</span></td>
+                    <td>{intern.university}</td>
                     <td><span className={`badge badge-${intern.status}`}>{intern.status}</span></td>
                   </tr>
                 ))}
@@ -141,15 +148,13 @@ function Dashboard() {
 function InternList() {
   const [interns, setInterns] = useState([]);
   const [search, setSearch] = useState('');
+  const [specializationFilter, setSpecializationFilter] = useState('');
   const [loading, setLoading] = useState(true);
 
   const fetchInterns = () => {
     setLoading(true);
-    const url = search 
-      ? `${API_BASE_URL}/interns/search?internNumber=${search}`
-      : `${API_BASE_URL}/interns`;
-      
-    axios.get(url)
+    // Fetch all and filter in frontend for simplicity in this lab app
+    axios.get(`${API_BASE_URL}/interns`)
       .then(res => {
         setInterns(res.data);
         setLoading(false);
@@ -162,7 +167,7 @@ function InternList() {
 
   useEffect(() => {
     fetchInterns();
-  }, [search]); // Re-fetch on search change
+  }, []);
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this intern?')) {
@@ -174,6 +179,18 @@ function InternList() {
     }
   };
 
+  // Filter logic
+  const filteredInterns = interns.filter(intern => {
+    const term = search.toLowerCase();
+    const matchesSearch = 
+      intern.internNumber.toLowerCase().includes(term) || 
+      intern.fullName.toLowerCase().includes(term);
+    
+    const matchesSpec = specializationFilter ? intern.specialization === specializationFilter : true;
+    
+    return matchesSearch && matchesSpec;
+  });
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -182,13 +199,24 @@ function InternList() {
       </div>
 
       <div className="card">
-        <div className="search-bar">
+        <div className="search-bar" style={{ display: 'flex', gap: '15px' }}>
           <input 
             type="text" 
-            placeholder="Search by exact intern number..." 
+            placeholder="Search by ID or Name..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            style={{ flex: 2 }}
           />
+          <select 
+            value={specializationFilter} 
+            onChange={(e) => setSpecializationFilter(e.target.value)}
+            style={{ flex: 1, padding: '12px 20px', borderRadius: '30px', border: '1px solid rgba(0,0,0,0.1)' }}
+          >
+            <option value="">All Specializations</option>
+            {SPECIALIZATIONS.map(spec => (
+              <option key={spec} value={spec}>{spec}</option>
+            ))}
+          </select>
         </div>
 
         {loading ? (
@@ -199,20 +227,22 @@ function InternList() {
               <tr>
                 <th>Intern #</th>
                 <th>Name</th>
-                <th>Department</th>
+                <th>Specialization</th>
+                <th>University</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {interns.length === 0 ? (
-                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>No interns found.</td></tr>
+              {filteredInterns.length === 0 ? (
+                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '30px' }}>No interns found.</td></tr>
               ) : (
-                interns.map(intern => (
+                filteredInterns.map(intern => (
                   <tr key={intern.id}>
                     <td style={{ fontWeight: '600' }}>{intern.internNumber}</td>
                     <td>{intern.fullName}</td>
-                    <td>{intern.department}</td>
+                    <td><span className="badge" style={{ background: '#f3f4f6', color: '#374151' }}>{intern.specialization || 'N/A'}</span></td>
+                    <td>{intern.university}</td>
                     <td><span className={`badge badge-${intern.status}`}>{intern.status}</span></td>
                     <td>
                       <Link to={`/edit/${intern.id}`} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Edit</Link>
@@ -239,6 +269,7 @@ function InternForm() {
     fullName: '',
     email: '',
     department: '',
+    specialization: '',
     university: '',
     phoneNumber: '',
     startDate: '',
@@ -307,6 +338,15 @@ function InternForm() {
               <input type="text" name="department" value={formData.department} onChange={handleChange} required />
             </div>
             <div className="form-group">
+              <label>Specialization</label>
+              <select name="specialization" value={formData.specialization} onChange={handleChange} required>
+                <option value="" disabled>Select Specialization</option>
+                {SPECIALIZATIONS.map(spec => (
+                  <option key={spec} value={spec}>{spec}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
               <label>University</label>
               <input type="text" name="university" value={formData.university} onChange={handleChange} />
             </div>
@@ -318,15 +358,14 @@ function InternForm() {
               <label>End Date</label>
               <input type="date" name="endDate" value={formData.endDate || ''} onChange={handleChange} />
             </div>
-          </div>
-          
-          <div className="form-group" style={{ marginTop: '10px' }}>
-            <label>Current Status</label>
-            <select name="status" value={formData.status} onChange={handleChange} required>
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="COMPLETED">COMPLETED</option>
-              <option value="TERMINATED">TERMINATED</option>
-            </select>
+            <div className="form-group">
+              <label>Current Status</label>
+              <select name="status" value={formData.status} onChange={handleChange} required>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="TERMINATED">TERMINATED</option>
+              </select>
+            </div>
           </div>
           
           <div style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
