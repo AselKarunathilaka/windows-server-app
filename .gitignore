@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# React / Vite build
+dist/
+build/
+
+# Spring Boot / Maven build
+target/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java compiled files
+*.class
+
+# Maven wrapper optional files
+.mvn/wrapper/maven-wrapper.jar
+
+# Temporary files
+*.tmp
+*.bak
