@@ -45,7 +45,7 @@ Open a PowerShell terminal, navigate to the `backend` directory, and set the `MO
 
 ```powershell
 cd backend
-$env:MONGODB_URI="mongodb+srv://asel:aselwin12@cluster0.7lpjxrq.mongodb.net/deployment_lab_db?retryWrites=true&w=majority"
+$env:MONGODB_URI="<YOUR_MONGODB_CONNECTION_STRING>"
 mvn clean package
 mvn spring-boot:run
 ```
