@@ -89,11 +89,18 @@ function Dashboard() {
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <h2 className="text-3xl font-bold text-white drop-shadow-md">System Dashboard</h2>
+    <>
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div className="blob bg-purple-400 w-96 h-96 top-[-10%] left-[-10%]" style={{ animationDelay: '0s', animationDuration: '12s' }}></div>
+        <div className="blob bg-pink-400 w-96 h-96 top-[40%] right-[-10%]" style={{ animationDelay: '2s', animationDuration: '15s' }}></div>
+        <div className="blob bg-indigo-400 w-[30rem] h-[30rem] bottom-[-20%] left-[20%]" style={{ animationDelay: '4s', animationDuration: '18s' }}></div>
+      </div>
       
-      {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="animate-fade-in space-y-6">
+        <h2 className="text-4xl font-extrabold text-slate-800 drop-shadow-sm tracking-tight">System Dashboard</h2>
+        
+        {/* Status Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { title: 'Frontend Status', value: status.frontend, subtitle: 'React Vite UI', statusColor: 'text-secondary', pulseColor: 'bg-secondary' },
           { title: 'Backend Status', value: status.backend, subtitle: 'Spring Boot API', statusColor: status.backend === 'running' ? 'text-secondary' : 'text-danger', pulseColor: status.backend === 'running' ? 'bg-secondary' : 'bg-danger' },
@@ -247,7 +254,8 @@ function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -329,18 +337,24 @@ function InternList() {
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-3xl font-bold text-white drop-shadow-md">Intern Directory</h2>
-        <div className="flex gap-3 w-full sm:w-auto">
-          <button className="btn btn-outline bg-white/10 text-white border-white/50 hover:bg-white/20 flex-1 sm:flex-none shadow-lg backdrop-blur-md" onClick={handleExportPDF}>
-            Export PDF
-          </button>
-          <Link to="/add" className="btn btn-success flex-1 sm:flex-none shadow-lg">
-            + Add New Intern
-          </Link>
-        </div>
+    <>
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div className="blob bg-teal-300 w-[40rem] h-[40rem] top-[-20%] right-[-10%]" style={{ animationDelay: '1s', animationDuration: '14s' }}></div>
+        <div className="blob bg-blue-400 w-96 h-96 bottom-[10%] left-[-10%]" style={{ animationDelay: '3s', animationDuration: '16s' }}></div>
       </div>
+
+      <div className="animate-fade-in space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h2 className="text-4xl font-extrabold text-slate-800 drop-shadow-sm tracking-tight">Intern Directory</h2>
+          <div className="flex gap-3 w-full sm:w-auto">
+            <button className="btn btn-outline flex-1 sm:flex-none shadow-lg" onClick={handleExportPDF}>
+              Export PDF
+            </button>
+            <Link to="/add" className="btn btn-success flex-1 sm:flex-none shadow-lg">
+              + Add New Intern
+            </Link>
+          </div>
+        </div>
 
       <div className="glass-card animate-slide-up">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -431,7 +445,8 @@ function InternList() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -485,15 +500,20 @@ function InternForm() {
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/interns')} className="bg-white/20 hover:bg-white/30 text-white p-2 rounded-full backdrop-blur-md transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-        </button>
-        <h2 className="text-3xl font-bold text-white drop-shadow-md">{isEdit ? 'Edit Intern Profile' : 'Register New Intern'}</h2>
+    <>
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div className="blob bg-rose-300 w-[30rem] h-[30rem] top-[20%] left-[30%]" style={{ animationDelay: '0s', animationDuration: '20s' }}></div>
       </div>
+
+      <div className="animate-fade-in space-y-6">
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate('/interns')} className="bg-white/40 hover:bg-white/60 text-slate-800 p-3 rounded-full backdrop-blur-xl transition-all shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <h2 className="text-4xl font-extrabold text-slate-800 drop-shadow-sm tracking-tight">{isEdit ? 'Edit Intern Profile' : 'Register New Intern'}</h2>
+        </div>
 
       <div className="glass-card max-w-4xl mx-auto animate-slide-up">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -556,13 +576,14 @@ function InternForm() {
               </svg>
               Save Profile
             </button>
-            <button type="button" className="btn bg-gray-100 hover:bg-gray-200 text-gray-700 flex-1 text-lg py-3" onClick={() => navigate('/interns')}>
+            <button type="button" className="btn bg-white/40 hover:bg-white/60 text-slate-700 flex-1 text-lg py-3 shadow-md border border-white/50" onClick={() => navigate('/interns')}>
               Cancel
             </button>
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -572,16 +593,16 @@ function App() {
       <header className="glass-header">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm shadow-inner">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-500 p-2.5 rounded-2xl shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight drop-shadow-md">Deployment Lab</h1>
+            <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Deployment Lab</h1>
           </div>
           <nav className="flex gap-2">
-            <Link to="/" className="text-white hover:bg-white/20 px-4 py-2 rounded-lg font-medium transition-colors">Dashboard</Link>
-            <Link to="/interns" className="text-white hover:bg-white/20 px-4 py-2 rounded-lg font-medium transition-colors">Directory</Link>
+            <Link to="/" className="text-slate-700 hover:text-indigo-600 hover:bg-white/40 px-5 py-2.5 rounded-xl font-bold transition-all">Dashboard</Link>
+            <Link to="/interns" className="text-slate-700 hover:text-indigo-600 hover:bg-white/40 px-5 py-2.5 rounded-xl font-bold transition-all">Directory</Link>
           </nav>
         </div>
       </header>
