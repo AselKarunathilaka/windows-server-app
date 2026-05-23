@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:19090/api';
 
@@ -61,12 +61,17 @@ function Dashboard() {
     return acc;
   }, {}));
 
+  const totalInterns = interns.length;
+
   const specializationData = Object.values(interns.reduce((acc, intern) => {
     const spec = intern.specialization || 'N/A';
     acc[spec] = acc[spec] || { name: spec, count: 0 };
     acc[spec].count += 1;
     return acc;
-  }, {})).sort((a, b) => b.count - a.count);
+  }, {})).sort((a, b) => b.count - a.count).map(item => ({
+    ...item,
+    percent: totalInterns > 0 ? ((item.count / totalInterns) * 100).toFixed(0) : 0
+  }));
 
   const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
 
@@ -163,7 +168,10 @@ function Dashboard() {
       {/* Charts Section */}
       <div className="analytics-section" style={{ marginTop: '25px' }}>
         <div className="card" style={{ flex: 1, minWidth: '300px' }}>
-          <h3 style={{ marginBottom: '20px' }}>Interns by University</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0 }}>Interns by University</h3>
+            <span className="badge" style={{ background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>Total: {interns.length}</span>
+          </div>
           <div style={{ height: '300px' }}>
             {loading ? <p>Loading chart...</p> : interns.length === 0 ? <p>No data</p> : (
               <ResponsiveContainer width="100%" height="100%">
@@ -171,19 +179,19 @@ function Dashboard() {
                   <Pie
                     data={universityData}
                     cx="50%"
-                    cy="50%"
+                    cy="45%"
                     innerRadius={60}
                     outerRadius={100}
                     fill="#8884d8"
                     paddingAngle={5}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                   >
                     {universityData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(value) => [`${value} Interns`, 'Count']} />
+                  <Legend verticalAlign="bottom" />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -191,7 +199,10 @@ function Dashboard() {
         </div>
 
         <div className="card" style={{ flex: 1, minWidth: '300px' }}>
-          <h3 style={{ marginBottom: '20px' }}>Interns by Specialization</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0 }}>Interns by Specialization</h3>
+            <span className="badge" style={{ background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)' }}>Total: {interns.length}</span>
+          </div>
           <div style={{ height: '300px' }}>
             {loading ? <p>Loading chart...</p> : interns.length === 0 ? <p>No data</p> : (
               <ResponsiveContainer width="100%" height="100%">
@@ -199,8 +210,9 @@ function Dashboard() {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} interval={0} angle={-30} textAnchor="end" height={60} />
                   <YAxis allowDecimals={false} />
-                  <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                  <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} formatter={(value) => [`${value} Interns`, 'Count']} />
                   <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} barSize={40}>
+                    <LabelList dataKey="percent" position="top" formatter={(val) => `${val}%`} style={{ fontSize: '11px', fill: '#6B7280', fontWeight: 'bold' }} />
                     {specializationData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
