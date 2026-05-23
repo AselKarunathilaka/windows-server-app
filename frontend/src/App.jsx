@@ -5,7 +5,11 @@ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, L
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:19090/api';
+// Automatically point to the server's IP address for API requests when accessed over a network
+const envUrl = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = (envUrl?.includes('localhost') && window.location.hostname !== 'localhost')
+  ? `${window.location.protocol}//${window.location.hostname}:19090/api`
+  : envUrl || 'http://localhost:19090/api';
 
 const SPECIALIZATIONS = [
   "AI", "BA", "C#", "CICD", "Cloud", "Flutter", 
